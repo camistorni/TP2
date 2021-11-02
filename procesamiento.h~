@@ -30,7 +30,6 @@ class Proceso{
 		void leer_opciones_edificios(lista_edificios *lista);
 
 		void leer_ubicaciones();
-		char **leer_mapa();
 
 		//Precondiciones: -
 		//Postcondiciones: Guarda los edificios en el archivo "edificios" y elimina la lista
