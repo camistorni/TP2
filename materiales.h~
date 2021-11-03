@@ -7,7 +7,7 @@ using namespace std;
 
 class Material{
 	
-	public:
+	protected:
 		string nombre_material;
 		int cantidad_material;
 	

@@ -1,5 +1,5 @@
 #include "materiales.h"
-#include "proceamiento.h"
+#include "procesamiento.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -19,7 +19,7 @@ void Proceso::leer_materiales(){
 		material->nombre_material = nombre;
 		material->cantidad_material = stoi(cantidad_material);
 
-		agregar_material(material);
+		//agregar_material(material);
 
 	}
 	
@@ -40,7 +40,7 @@ void Proceso::leer_opciones_edificios(){
 		archivo_edificios >> cantidad_metal;
 		archivo_edificios >> cantidad_maxima_permitida;
 		
-		edificio = new edificio_t;
+		edificio = new Edificio;
 		edificio->nombre_edificio = nombre;
 		edificio->cantidad_piedra = stoi(cantidad_piedra);
 		edificio->cantidad_madera = stoi(cantidad_madera);
@@ -48,7 +48,7 @@ void Proceso::leer_opciones_edificios(){
 		edificio->cantidad_maxima_permitida = stoi(cantidad_maxima_permitida);
 
 
-		agregar_edificio(edificio);
+		//agregar_edificio(edificio);
 
 	}
 	
@@ -76,35 +76,46 @@ void Proceso::leer_ubicaciones(){
 		ubicacion->fila = fila - '0';
 		ubicacion->columna = columna - '0';
 		
-		agregar_ubicacion(ubicacion);
+		//agregar_ubicacion(ubicacion);
 	}
 	
 	archivo_ubicaciones.close();
 }
 
-char **Proceso::leer_mapa(){
+void Proceso::leer_mapa(int *cantidad_filas){
 
 	fstream archivo_mapa(PATH_MAPA, ios::in);
 
-	string cantidad_filas, cantidad_columnas;
-	
-	archivo_mapa >> cantidad_filas
-	archivo_mapa >> cantidad_columnas;
+	char filas, columnas;
+
+	archivo_mapa >> filas;
+	archivo_mapa >> columnas;
+
+	cout << "fila: " << mapa->cantidad_filas << endl;
+	cout << "columna: " << mapa->cantidad_columnas << endl;
 		
 	//Creación de la matriz dinámica
-	char **mapa = new char * [cantidad_filas];
+	mapa->mapa = new char * [filas - '0'];
 	
-	for(int i = 0; i < cantidad_filas; i++)
-		mapa[i] = new char[cantidad_columnas];
+	for(int i = 0; i < filas - '0'; i++)
+		mapa->mapa[i] = new char[columnas - '0'];
+	
+	mapa->cantidad_filas = filas - '0';
+	mapa->cantidad_columnas = columnas - '0';
+	*cantidad_filas = filas- '0';
 			
 	//Inicialización de la matriz con los datos
-	for(int i = 0; i < cantidad_filas; i++){
-		for(int j = 0; j < cantidad_columnas; j++)
-			archivo_mapa >> mapa[i][j];
+	for(int i = 0; i < mapa->cantidad_filas; i++){
+		for(int j = 0; j < mapa->cantidad_columnas; j++)
+			mapa->mapa[i][j] = 0;
 	}
 	
-	archivo_materiales.close();
-	return mapa;
+	for(int i = 0; i < mapa->cantidad_filas; i++){
+		for(int j = 0; j < mapa->cantidad_columnas; j++)
+			archivo_mapa >> mapa->mapa[i][j];
+	}
+	
+	archivo_mapa.close();
 	
 }
 
@@ -113,9 +124,9 @@ void Proceso::cerrar_materiales(){
 	ofstream archivo_materiales(PATH_MATERIALES);
 	
 	for(int i = 0; i < this->cantidad_materiales; i++){
-		archivo_materiales << this->material[i] -> nombre << ' '
-						   << this->material[i] -> cantidad_material << '\n';
-		delete this->material[i];
+		archivo_materiales << this->material[i].nombre_material << ' '
+						   << this->material[i].cantidad_material << '\n';
+		//delete this->material[i];
 	}
 	
 	delete[] this->material;
@@ -127,12 +138,12 @@ void Proceso::cerrar_edificios(){
 	ofstream archivo_edificios(PATH_EDIFICIOS);
 	
 	for(int i = 0; i < this->cantidad_edificios; i++){
-		archivo_edificios << this->edificio[i] -> nombre_edificio << ' '
-						  << this->edificio[i] -> cantidad_piedra << ' '
-						  << this->edificio[i] -> cantidad_madera << ' '
-						  << this->edificio[i] -> cantidad_metal << ' '
-						  << this->edificio[i] -> cantidad_maxima_permitida << '\n';
-		delete this->edificio[i];
+		archivo_edificios << this->edificio[i].nombre_edificio << ' '
+						  << this->edificio[i].cantidad_piedra << ' '
+						  << this->edificio[i].cantidad_madera << ' '
+						  << this->edificio[i].cantidad_metal << ' '
+						  << this->edificio[i].cantidad_maxima_permitida << '\n';
+//		delete this->edificio[i];
 
 	}
 	
@@ -145,11 +156,11 @@ void Proceso::cerrar_ubicaciones(){
 	ofstream archivo_ubicaciones(PATH_UBICACIONES);
 	
 	for(int i = 0; i < cantidad_ubicaciones; i++){
-		archivo_ubicaciones << this->ubicacion[i]->nombre_edificio << " ("
-							<< this->ubicacion[i]->fila << ", "
-							<< this->ubicacion[i]->columna << ')' << '\n';
+		archivo_ubicaciones << this->ubicacion[i].nombre_edificio << " ("
+							<< this->ubicacion[i].fila << ", "
+							<< this->ubicacion[i].columna << ')' << '\n';
 	
-		delete this->ubicacion[i];
+		//delete this->ubicacion[i];
 	}
 	delete[] this->ubicacion;
 }

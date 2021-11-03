@@ -5,6 +5,8 @@
 #include "edificios.h"
 #include "ubicaciones.h"
 
+#include <iostream>
+
 #define PATH_MATERIALES "materiales.txt"
 #define PATH_EDIFICIOS "edificios.txt"
 #define PATH_UBICACIONES "ubicaciones.txt"
@@ -12,39 +14,48 @@
 
 using namespace std;
 
+class Mapa{
+
+	public:
+		int cantidad_filas;
+		int cantidad_columnas;
+		char **mapa;
+};
+
 class Proceso{
 
 	private:
 		Material *material;
-		Edificio *edificio
+		Edificio *edificio;
 		Ubicacion *ubicacion;
-		int cantidad_materiales, cantidad_edificio, cantidad_ubicaciones;
+		Mapa *mapa;
+		int cantidad_materiales, cantidad_edificios, cantidad_ubicaciones;
 		
 	public:
 		//Precondiciones: -
 		//Postcondiciones: Guarda los datos del archivo de materiales
-		void leer_materiales(lista_materiales *lista);
+		void leer_materiales();
 
 		//Precondiciones: -
 		//Postcondiciones: Guarda los datos del archivo de edificios
-		void leer_opciones_edificios(lista_edificios *lista);
+		void leer_opciones_edificios();
 
 		void leer_ubicaciones();
-		char **leer_mapa();
+		void leer_mapa(int *cantidad_filas);
 
 		//Precondiciones: -
 		//Postcondiciones: Guarda los edificios en el archivo "edificios" y elimina la lista
-		void cerrar_edificios(lista_edificios *lista);
+		void cerrar_edificios();
 
 		//Precondiciones: -
 		//Postcondiciones: Guarda los materiales en el archivo "materiales" y elimina la lista
-		void cerrar_materiales(lista_materiales *lista);
+		void cerrar_materiales();
 		
 		void cerrar_ubicaciones();
 
 		//Precondiciones: -
 		//Postcondiciones: Guarda los edificios en el archivo "edificios" y elimina la lista. Guarda los materiales en el archivo "materiales" y elimina la lista
-		void guardar_y_salir(lista_edificios *edificios, lista_materiales *materiales);
+		void guardar_y_salir();
 		
 };
 
