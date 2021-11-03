@@ -1,16 +1,15 @@
 #include "ubicaciones.h"
-/*
-void Ubicacion::agregar_ubicacion(Ubicacion *ubicacion){
 
-	int n = this->cantidad_ubicaciones;
-	Ubicacion **vector_ubicaciones = new Ubicacion*[n + 1];
+void Proceso::agregar_ubicacion(Ubicacion *nueva_ubicacion){
+
+	Ubicacion **vector_ubicaciones = new Ubicacion*[this->cantidad_ubicaciones + 1];
 	if(vector_ubicaciones == NULL)
 		delete[] vector_ubicaciones;
 	
 	for(int i = 0; i < this->cantidad_ubicaciones; i++)
 		vector_ubicaciones[i] = this->ubicacion[i];
 		
-	vector_ubicaciones[n] = ubicacion;
+	vector_ubicaciones[cantidad_ubicaciones] = nueva_ubicacion;
 	
 	if(this->cantidad_ubicaciones != 0){
 		delete[] this->ubicacion;
@@ -19,4 +18,4 @@ void Ubicacion::agregar_ubicacion(Ubicacion *ubicacion){
 	this->ubicacion = vector_ubicaciones;
 	this->cantidad_ubicaciones++;	
 
-}*/
+}

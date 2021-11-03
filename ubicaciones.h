@@ -11,9 +11,6 @@ class Ubicacion{
 		string nombre_edificio;
 		int fila;
 		int columna;
-		
-	public:
-		void agregar_ubicacion(Ubicacion *ubicacion);
 };
 
 #endif

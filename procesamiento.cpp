@@ -19,7 +19,7 @@ void Proceso::leer_materiales(){
 		material->nombre_material = nombre;
 		material->cantidad_material = stoi(cantidad_material);
 
-		//agregar_material(material);
+		agregar_material(material);
 
 	}
 	
@@ -39,6 +39,10 @@ void Proceso::leer_opciones_edificios(){
 		archivo_edificios >> cantidad_madera;
 		archivo_edificios >> cantidad_metal;
 		archivo_edificios >> cantidad_maxima_permitida;
+		cout << "piedra: " << cantidad_piedra << endl;
+		cout << "madera: " << cantidad_madera << endl;
+		cout << "metal: " << cantidad_metal << endl;
+		cout << "max: " << cantidad_maxima_permitida << endl;
 		
 		edificio = new Edificio;
 		edificio->nombre_edificio = nombre;
@@ -48,7 +52,7 @@ void Proceso::leer_opciones_edificios(){
 		edificio->cantidad_maxima_permitida = stoi(cantidad_maxima_permitida);
 
 
-		//agregar_edificio(edificio);
+		agregar_edificio(edificio);
 
 	}
 	
@@ -76,7 +80,7 @@ void Proceso::leer_ubicaciones(){
 		ubicacion->fila = fila - '0';
 		ubicacion->columna = columna - '0';
 		
-		//agregar_ubicacion(ubicacion);
+		agregar_ubicacion(ubicacion);
 	}
 	
 	archivo_ubicaciones.close();
@@ -91,8 +95,8 @@ void Proceso::leer_mapa(int *cantidad_filas){
 	archivo_mapa >> filas;
 	archivo_mapa >> columnas;
 
-	cout << "fila: " << mapa->cantidad_filas << endl;
-	cout << "columna: " << mapa->cantidad_columnas << endl;
+	cout << "fila: " << this->mapa->cantidad_filas << endl;
+	cout << "columna: " << this->mapa->cantidad_columnas << endl;
 		
 	//Creación de la matriz dinámica
 	mapa->mapa = new char * [filas - '0'];
@@ -100,23 +104,80 @@ void Proceso::leer_mapa(int *cantidad_filas){
 	for(int i = 0; i < filas - '0'; i++)
 		mapa->mapa[i] = new char[columnas - '0'];
 	
-	mapa->cantidad_filas = filas - '0';
-	mapa->cantidad_columnas = columnas - '0';
+	this->mapa->cantidad_filas = filas - '0';
+	this->mapa->cantidad_columnas = columnas - '0';
 	*cantidad_filas = filas- '0';
 			
 	//Inicialización de la matriz con los datos
-	for(int i = 0; i < mapa->cantidad_filas; i++){
-		for(int j = 0; j < mapa->cantidad_columnas; j++)
-			mapa->mapa[i][j] = 0;
+	for(int i = 0; i < this->mapa->cantidad_filas; i++){
+		for(int j = 0; j < this->mapa->cantidad_columnas; j++)
+			this->mapa->mapa[i][j] = 0;
 	}
 	
-	for(int i = 0; i < mapa->cantidad_filas; i++){
-		for(int j = 0; j < mapa->cantidad_columnas; j++)
-			archivo_mapa >> mapa->mapa[i][j];
+	for(int i = 0; i < this->mapa->cantidad_filas; i++){
+		for(int j = 0; j < this->mapa->cantidad_columnas; j++)
+			archivo_mapa >> this->mapa->mapa[i][j];
 	}
 	
 	archivo_mapa.close();
 	
+}
+
+void Proceso::agregar_material(Material *nuevo_material){
+
+	Material **vector_materiales = new Material*[this->cantidad_materiales + 1];
+	if(vector_materiales == NULL)
+		delete[] vector_materiales;
+	
+	for(int i = 0; i < this->cantidad_materiales; i++)
+		vector_materiales[i] = this->material[i];
+		
+	vector_materiales[this->cantidad_materiales] = nuevo_material;
+	
+	if(this->cantidad_materiales != 0){
+		delete[] this->material;
+	}
+	
+	this->material = vector_materiales;
+	this->cantidad_materiales++;	
+
+}
+
+void Proceso::agregar_edificio(Edificio *nuevo_edificio){
+
+	Edificio **vector_edificios = new Edificio * [this->cantidad_edificios + 1];
+	
+	for(int i = 0; i < this->cantidad_edificios; i++)
+		vector_edificios[i] = this->edificio[i];
+		
+	vector_edificios[this->cantidad_edificios] = nuevo_edificio;
+	
+	if(this->cantidad_edificios != 0)
+		delete[] this->edificio;
+	
+	this->edificio = vector_edificios;
+	this->cantidad_edificios++;	
+
+}
+
+void Proceso::agregar_ubicacion(Ubicacion *nueva_ubicacion){
+
+	Ubicacion **vector_ubicaciones = new Ubicacion*[this->cantidad_ubicaciones + 1];
+	if(vector_ubicaciones == NULL)
+		delete[] vector_ubicaciones;
+	
+	for(int i = 0; i < this->cantidad_ubicaciones; i++)
+		vector_ubicaciones[i] = this->ubicacion[i];
+		
+	vector_ubicaciones[this->cantidad_ubicaciones] = nueva_ubicacion;
+	
+	if(this->cantidad_ubicaciones != 0){
+		delete[] this->ubicacion;
+	}
+	
+	this->ubicacion = vector_ubicaciones;
+	this->cantidad_ubicaciones++;	
+
 }
 
 void Proceso::cerrar_materiales(){
@@ -124,9 +185,9 @@ void Proceso::cerrar_materiales(){
 	ofstream archivo_materiales(PATH_MATERIALES);
 	
 	for(int i = 0; i < this->cantidad_materiales; i++){
-		archivo_materiales << this->material[i].nombre_material << ' '
-						   << this->material[i].cantidad_material << '\n';
-		//delete this->material[i];
+		archivo_materiales << this->material[i]->nombre_material << ' '
+						   << this->material[i]->cantidad_material << '\n';
+		delete this->material[i];
 	}
 	
 	delete[] this->material;
@@ -138,12 +199,12 @@ void Proceso::cerrar_edificios(){
 	ofstream archivo_edificios(PATH_EDIFICIOS);
 	
 	for(int i = 0; i < this->cantidad_edificios; i++){
-		archivo_edificios << this->edificio[i].nombre_edificio << ' '
-						  << this->edificio[i].cantidad_piedra << ' '
-						  << this->edificio[i].cantidad_madera << ' '
-						  << this->edificio[i].cantidad_metal << ' '
-						  << this->edificio[i].cantidad_maxima_permitida << '\n';
-//		delete this->edificio[i];
+		archivo_edificios << this->edificio[i]->nombre_edificio << ' '
+						  << this->edificio[i]->cantidad_piedra << ' '
+						  << this->edificio[i]->cantidad_madera << ' '
+						  << this->edificio[i]->cantidad_metal << ' '
+						  << this->edificio[i]->cantidad_maxima_permitida << '\n';
+		delete this->edificio[i];
 
 	}
 	
@@ -156,11 +217,11 @@ void Proceso::cerrar_ubicaciones(){
 	ofstream archivo_ubicaciones(PATH_UBICACIONES);
 	
 	for(int i = 0; i < cantidad_ubicaciones; i++){
-		archivo_ubicaciones << this->ubicacion[i].nombre_edificio << " ("
-							<< this->ubicacion[i].fila << ", "
-							<< this->ubicacion[i].columna << ')' << '\n';
+		archivo_ubicaciones << this->ubicacion[i]->nombre_edificio << " ("
+							<< this->ubicacion[i]->fila << ", "
+							<< this->ubicacion[i]->columna << ')' << '\n';
 	
-		//delete this->ubicacion[i];
+		delete this->ubicacion[i];
 	}
 	delete[] this->ubicacion;
 }

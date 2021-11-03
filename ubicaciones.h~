@@ -7,7 +7,7 @@ using namespace std;
 
 class Ubicacion{
 
-	private:
+	public:
 		string nombre_edificio;
 		int fila;
 		int columna;
